@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.ono.streamer'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.ono.streamer"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -27,6 +27,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    buildFeatures {
+        dataBinding true
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
