@@ -1,4 +1,4 @@
-package com.ono.streamer.ui
+package com.ono.streamer.ui.mainscreen
 
 import android.app.Application
 import androidx.lifecycle.SavedStateHandle

@@ -1,4 +1,4 @@
-package com.ono.streamer
+package com.ono.streamer.ui.helper
 
 import android.view.View
 import androidx.databinding.BindingAdapter

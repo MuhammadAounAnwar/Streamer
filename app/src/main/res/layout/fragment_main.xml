@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.ono.streamer.ui.StreamerViewModel" />
+            type="com.ono.streamer.ui.mainscreen.StreamerViewModel" />
     </data>
 
     <ScrollView
@@ -18,7 +18,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".ui.MainFragment">
+            tools:context=".ui.mainscreen.MainFragment">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appbar"

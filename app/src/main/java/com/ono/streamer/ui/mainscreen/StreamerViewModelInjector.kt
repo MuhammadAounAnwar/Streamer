@@ -1,7 +1,8 @@
-package com.ono.streamer.ui
+package com.ono.streamer.ui.mainscreen
 
 import android.app.Application
 import androidx.lifecycle.SavedStateHandle
+import com.ono.streamer.ui.ViewModelInjector
 import com.ono.streamerlibrary.ActivityScope
 import javax.inject.Inject
 

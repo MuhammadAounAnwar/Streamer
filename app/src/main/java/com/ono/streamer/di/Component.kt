@@ -1,5 +1,6 @@
-package com.ono.streamer
+package com.ono.streamer.di
 
+import com.ono.streamer.StreamerClass
 import com.ono.streamerlibrary.ManagerMainModule
 import com.ono.streamerlibrary.ApplicationScope
 import dagger.BindsInstance

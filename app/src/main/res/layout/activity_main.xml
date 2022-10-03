@@ -7,13 +7,13 @@
 
         <variable
             name="viewModel"
-            type="com.ono.streamer.ui.StreamerViewModel" />
+            type="com.ono.streamer.ui.mainscreen.StreamerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.MainActivity">
+        tools:context=".ui.mainscreen.MainActivity">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host_fragment"

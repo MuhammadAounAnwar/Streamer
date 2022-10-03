@@ -1,4 +1,4 @@
-package com.ono.streamer.ui
+package com.ono.streamer.ui.mainscreen
 
 import android.content.Context
 import android.os.Bundle
@@ -7,14 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.ono.streamer.databinding.FragmentMainBinding
+import com.ono.streamer.databinding.FragmentDetailBinding
+import com.ono.streamer.ui.ViewModelFactory
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
-class MainFragment : Fragment(), HasAndroidInjector {
+class DetailFragment : Fragment(), HasAndroidInjector {
 
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
@@ -22,7 +23,7 @@ class MainFragment : Fragment(), HasAndroidInjector {
     @Inject
     lateinit var injector: StreamerViewModelInjector
 
-    lateinit var binding: FragmentMainBinding
+    lateinit var binding: FragmentDetailBinding
 
     private val viewModel by lazy {
         val factory = ViewModelFactory(injector, this, null)
@@ -30,10 +31,9 @@ class MainFragment : Fragment(), HasAndroidInjector {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding = FragmentDetailBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        binding.toolbar.setNavigationOnClickListener { requireActivity().finish() }
         return binding.root
     }
 
@@ -42,8 +42,8 @@ class MainFragment : Fragment(), HasAndroidInjector {
         if (activity is HasAndroidInjector) {
             AndroidSupportInjection.inject(this)
         }
+
     }
 
     override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
-
 }

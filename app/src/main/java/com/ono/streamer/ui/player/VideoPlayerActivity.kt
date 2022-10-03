@@ -13,7 +13,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.util.Util
 import com.ono.streamer.R
 import com.ono.streamer.databinding.ActivityVideoPlayerBinding
-import com.ono.streamer.ui.StreamerViewModelInjector
+import com.ono.streamer.ui.mainscreen.StreamerViewModelInjector
 import com.ono.streamer.ui.ViewModelFactory
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector

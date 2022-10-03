@@ -1,7 +1,8 @@
-package com.ono.streamer
+package com.ono.streamer.di
 
 import android.app.Application
 import android.content.Context
+import com.ono.streamer.StreamerClass
 import dagger.Binds
 import dagger.Module
 

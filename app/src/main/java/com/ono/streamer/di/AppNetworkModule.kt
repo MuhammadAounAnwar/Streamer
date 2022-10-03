@@ -1,8 +1,10 @@
-package com.ono.streamer
+package com.ono.streamer.di
 
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.ono.streamer.AppWebService
+import com.ono.streamer.BuildConfig
 import com.ono.streamerlibrary.ApplicationScope
 import com.ono.streamerlibrary.RetrofitHelper
 import dagger.Module
