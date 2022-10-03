@@ -33,6 +33,7 @@ class MainFragment : Fragment(), HasAndroidInjector {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        binding.toolbar.setNavigationOnClickListener { requireActivity().finish() }
         return binding.root
     }
 
@@ -41,7 +42,6 @@ class MainFragment : Fragment(), HasAndroidInjector {
         if (activity is HasAndroidInjector) {
             AndroidSupportInjection.inject(this)
         }
-
     }
 
     override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector

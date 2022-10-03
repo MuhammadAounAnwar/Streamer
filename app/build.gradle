@@ -66,4 +66,8 @@ dependencies {
     def dagger = '2.44'
     kapt "com.google.dagger:dagger-android-processor:$dagger"
     kapt "com.google.dagger:dagger-compiler:$dagger"
+
+
+    // Full exoplayer library
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
 }
