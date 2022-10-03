@@ -1,0 +1,86 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'kotlin-android'
+}
+
+android {
+    namespace 'com.ono.streamerlibrary'
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures{
+        dataBinding true
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.6.1'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    def saved_state_version = "2.5.1"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:$saved_state_version"
+    api "androidx.lifecycle:lifecycle-livedata-ktx:$saved_state_version"
+    api "androidx.lifecycle:lifecycle-viewmodel-savedstate:$saved_state_version"
+
+    def retrofit = '2.9.0'
+    def retrofit_dep = '4.9.3'
+    api "com.squareup.retrofit2:retrofit:$retrofit"
+    api "com.squareup.retrofit2:converter-gson:$retrofit"
+    api "com.squareup.okhttp3:okhttp:$retrofit_dep"
+    api "com.squareup.okhttp3:logging-interceptor:$retrofit_dep"
+    api 'com.google.code.gson:gson:2.9.0'
+
+    //ktx libs
+    //core KTX
+    api 'androidx.core:core-ktx:1.9.0'
+
+    api "androidx.collection:collection-ktx:1.2.0"
+
+    api "androidx.fragment:fragment-ktx:1.5.3"
+
+    def lifecycle = '2.5.1'
+    api "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle"
+    api "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle"
+    api "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+
+    //navigation
+    def nav = '2.5.2'
+    api "androidx.navigation:navigation-runtime-ktx:$nav"
+    api "androidx.navigation:navigation-fragment-ktx:$nav"
+    api "androidx.navigation:navigation-ui-ktx:$nav"
+
+    def dagger = '2.44'
+    api "com.google.dagger:dagger:$dagger"
+    api "com.google.dagger:dagger-android:$dagger"
+    api "com.google.dagger:dagger-android-support:$dagger"
+    kapt "com.google.dagger:dagger-android-processor:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
+}
