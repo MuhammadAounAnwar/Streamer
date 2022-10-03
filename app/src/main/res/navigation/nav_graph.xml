@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.ono.streamer.DetailFragment"
+        android:name="com.ono.streamer.ui.DetailFragment"
         android:label="fragment_detail"
         tools:layout="@layout/fragment_detail" />
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.ono.streamer.MainFragment"
+        android:name="com.ono.streamer.ui.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
