@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
         binding
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+
+        viewModel.initViewModel()
     }
 
     override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector

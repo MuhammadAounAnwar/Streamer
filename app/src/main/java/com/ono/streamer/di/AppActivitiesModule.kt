@@ -16,7 +16,7 @@ abstract class AppActivitiesModule {
     abstract fun createMainActivity(): MainActivity
 
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun createPlayerActivity(): VideoPlayerActivity
+//    @ActivityScope
+//    @ContributesAndroidInjector()
+//    abstract fun createPlayerActivity(): VideoPlayerActivity
 }

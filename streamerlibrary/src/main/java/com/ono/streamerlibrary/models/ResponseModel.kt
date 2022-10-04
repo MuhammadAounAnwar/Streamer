@@ -1,9 +1,9 @@
-package com.ono.streamer.models
+package com.ono.streamerlibrary.models
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class Response(
+data class ResponseModel(
     @SerializedName("page") @Expose var page: Int? = null,
 
     @SerializedName("results") @Expose var results: List<Result>? = null,

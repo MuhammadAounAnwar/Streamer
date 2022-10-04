@@ -7,8 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitHelper {
-    const val baseUrl = "https://ringtokapi.com/"
-    const val baseUrlApi = "${baseUrl}api/" //https://43.200.163.139/   http://54.180.100.106/
+    const val baseUrl = "https://api.themoviedb.org/"
+    const val baseUrlApi = "${baseUrl}3/"
 
     fun getInstance(): Retrofit {
         return Retrofit.Builder().baseUrl(baseUrlApi)

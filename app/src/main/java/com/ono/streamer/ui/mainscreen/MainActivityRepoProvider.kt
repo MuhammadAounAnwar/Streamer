@@ -7,11 +7,12 @@ import dagger.Provides
 @Module
 class MainActivityRepoProvider {
 
-    @Provides
     @ActivityScope
-    fun repo(source: ISource) = IRepository.get(source)
+    @Provides
+    fun repo(source: ISource): Repository = Repository.get(source)
 
-    @Provides
     @ActivityScope
-    fun source() = ISource.get()
+    @Provides
+    fun createSource(): ISource = ISource.get()
+
 }

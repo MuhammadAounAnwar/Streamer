@@ -1,6 +1,7 @@
 package com.ono.streamer
 
 import android.app.Application
+import com.ono.streamer.di.DaggerComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector

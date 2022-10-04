@@ -7,6 +7,6 @@ import com.ono.streamerlibrary.ActivityScope
 import javax.inject.Inject
 
 @ActivityScope
-class StreamerViewModelInjector @Inject constructor(private val applicationContext: Application) : ViewModelInjector<StreamerViewModel> {
-    override fun create(savedStateHandle: SavedStateHandle): StreamerViewModel = StreamerViewModel(savedStateHandle, applicationContext)
+class StreamerViewModelInjector @Inject constructor(private val applicationContext: Application, private val repository: Repository) : ViewModelInjector<StreamerViewModel> {
+    override fun create(savedStateHandle: SavedStateHandle): StreamerViewModel = StreamerViewModel(savedStateHandle, applicationContext, repository)
 }
