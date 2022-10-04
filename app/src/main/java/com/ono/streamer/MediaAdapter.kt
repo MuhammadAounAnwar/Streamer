@@ -7,29 +7,29 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ono.streamer.databinding.RvItemLayoutBinding
 
-class Adapter(private val context: Context) : RecyclerView.Adapter<Adapter.ViewHolder>() {
+class MediaAdapter(private val context: Context) : RecyclerView.Adapter<MediaAdapter.ViewHolder>() {
 
-    val mediaFiles = mutableListOf<String>()
+    private val mediaFiles = mutableListOf<com.ono.streamerlibrary.models.Result>()
     override fun getItemCount(): Int {
         return mediaFiles.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Adapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaAdapter.ViewHolder {
         val binding = RvItemLayoutBinding.inflate(LayoutInflater.from(context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: Adapter.ViewHolder, position: Int) {
-        holder.bind()
+    override fun onBindViewHolder(holder: MediaAdapter.ViewHolder, position: Int) {
+        holder.bind(mediaFiles[position])
     }
 
-    fun submitMediaList(recyclerView: RecyclerView, mediaFiles: List<String>) {
-        recyclerView.post {
-            if (this.mediaFiles.isEmpty()) {
-                this.mediaFiles.addAll(mediaFiles)
-                notifyDataSetChanged()
-            }
-        }
+    fun submitMediaList(recyclerView: RecyclerView, mediaFiles: List<com.ono.streamerlibrary.models.Result>) {
+//        recyclerView.post {
+//            if (this.mediaFiles.isEmpty()) {
+//                this.mediaFiles.addAll(mediaFiles)
+//                notifyDataSetChanged()
+//            }
+//        }
 
         mediaFiles.let {
             val diffUtil = DiffUtil.calculateDiff(ItemsDiffUtil(this.mediaFiles, it))
@@ -41,13 +41,14 @@ class Adapter(private val context: Context) : RecyclerView.Adapter<Adapter.ViewH
 
 
     inner class ViewHolder(val binding: RvItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind() {
-
+        fun bind(result: com.ono.streamerlibrary.models.Result) {
+            binding.result = result
             binding.executePendingBindings()
         }
+
     }
 
-    inner class ItemsDiffUtil(private val oldMembers: List<String>, private val newMembers: List<String>) :
+    inner class ItemsDiffUtil(private val oldMembers: List<com.ono.streamerlibrary.models.Result>, private val newMembers: List<com.ono.streamerlibrary.models.Result>) :
         DiffUtil.Callback() {
         override fun getOldListSize(): Int {
             return oldMembers.size

@@ -7,11 +7,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitHelper {
-    const val baseUrl = "https://api.themoviedb.org/"
-    const val baseUrlApi = "${baseUrl}3/"
+    const val baseUrl = "https://api.themoviedb.org/3/"
+//    const val baseUrlApi = "${baseUrl}/3"
 
     fun getInstance(): Retrofit {
-        return Retrofit.Builder().baseUrl(baseUrlApi)
+        return Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .client(getClient())
             .build()
@@ -26,7 +26,6 @@ object RetrofitHelper {
         builder.readTimeout(2, TimeUnit.MINUTES)
         builder.connectTimeout(30, TimeUnit.SECONDS)
         builder.writeTimeout(2, TimeUnit.MINUTES)
-
 
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(logging)

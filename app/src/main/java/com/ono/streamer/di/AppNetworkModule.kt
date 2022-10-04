@@ -48,7 +48,7 @@ class AppNetworkModule {
     @ApplicationScope
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(RetrofitHelper.baseUrlApi)
+            .baseUrl(RetrofitHelper.baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
