@@ -45,6 +45,7 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
     }
 
     private fun getDefaultData() {
+        _loader.value = true
         scope.launch(Dispatchers.IO) {
             val response = repository.getDefaultData()
             filterResponseData(response)
@@ -64,7 +65,7 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
                     "person" -> profiles.add(item)
                 }
             }
-            setDefaultData()
+//            setDefaultData()
             sendDataToUI()
         }
     }
@@ -83,6 +84,7 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
 
     private fun sendDataToUI() {
         scope.launch(Dispatchers.Main) {
+            _loader.value = false
             _moviesList.value = movies
             _tvShowsList.value = tvShows
             _profilesList.value = profiles
@@ -95,12 +97,11 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
 
     fun getSearchedResult(query: String) {
         if (query.isNotEmpty()) {
+            _loader.value = true
             scope.launch(Dispatchers.IO) {
                 val response = repository.getSearchedData(query)
                 filterResponseData(response)
             }
-        } else {
-            sendDataToUI()
         }
 
     }

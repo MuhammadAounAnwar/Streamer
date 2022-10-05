@@ -15,7 +15,7 @@ class LoaderDialog(val context: Context) {
     fun createProgressDialog() {
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         dialog.setTitle("Loading")
-        dialog.setMessage("Please wait...")
+        dialog.setMessage("")
         dialog.isIndeterminate = true
         dialog.setCanceledOnTouchOutside(false)
     }
