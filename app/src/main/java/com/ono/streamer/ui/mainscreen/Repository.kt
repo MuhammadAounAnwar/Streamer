@@ -19,7 +19,8 @@ interface Repository {
         fun get(source: ISource) = RepositoryImpl(source)
     }
 
-    suspend fun getAllData(): ResponseModel
+    suspend fun getDefaultData(): ResponseModel
+    suspend fun getSearchedData(query: String): ResponseModel
 }
 
 interface ISource {
@@ -27,12 +28,13 @@ interface ISource {
         fun get() = ISourceImpl()
     }
 
-    suspend fun getAllData(): ResponseModel
+    suspend fun getDefaultData(): ResponseModel
+    suspend fun getSearchedData(query: String): ResponseModel
 }
 
 class RepositoryImpl(private val source: ISource) : Repository {
-    override suspend fun getAllData(): ResponseModel = source.getAllData()
-
+    override suspend fun getDefaultData(): ResponseModel = source.getDefaultData()
+    override suspend fun getSearchedData(query: String): ResponseModel = source.getSearchedData(query)
 }
 
 
@@ -40,22 +42,24 @@ class ISourceImpl : ISource {
 
     private lateinit var response: ResponseModel
 
-    override suspend fun getAllData(): ResponseModel {
+    override suspend fun getDefaultData(): ResponseModel = getData("action")
+
+    override suspend fun getSearchedData(query: String) = getData(query)
+
+    private suspend fun getData(query: String): ResponseModel {
         kotlin.runCatching {
-            response = RetrofitHelper.getInstance().create(WebServices::class.java).getMultiSearch("3d0cda4466f269e793e9283f6ce0b75e", "en-US", "action", 1, false, "")
-
-
+            response = RetrofitHelper.getInstance().create(WebServices::class.java).getMultiSearch("3d0cda4466f269e793e9283f6ce0b75e", "en-US", query, 1, false, "")
 //            response = when (apiResponse.code()) {
 //                200 -> com.ono.streamerlibrary.models.JsonParser.parseResponse(apiResponse)
 //                401, 404 -> convertJsonResponse(apiResponse, ErrorResponse::class.java)
 //                else -> {}
 //            }
-
         }.onFailure {
             it.printStackTrace()
         }
         return response
     }
+
 
     private fun convertSuccessResponse(response: Response<Any>, parseClass: Class<*>) {
         val gson = Gson()

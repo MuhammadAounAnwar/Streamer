@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ResponseModel(
     @SerializedName("page") @Expose var page: Int? = null,
 
-    @SerializedName("results") @Expose var results: List<Result>? = null,
+    @SerializedName("results") @Expose var results: List<Result>? = arrayListOf(),
 
     @SerializedName("total_results") @Expose var totalResults: Int? = null,
 

@@ -12,7 +12,7 @@ import com.ono.streamer.R
 private const val TAG = "HANDLER"
 
 @BindingAdapter("loadThumbnail")
-fun loadThumbnail(view: View, imageUrl: String) {
+fun loadThumbnail(view: View, imageUrl: String?) {
     if (imageUrl.isNullOrBlank()) {
         return
     }

@@ -24,7 +24,7 @@ data class KnownFor(
 
     @SerializedName("title") @Expose var title: String? = null,
 
-//    @SerializedName("backdrop_path") @Expose var backdrop_path: String = "backdrop_path",
+    @SerializedName("backdrop_path") @Expose var backdrop_path: String = "backdrop_path",
 
     @SerializedName("popularity") @Expose var popularity: Double? = null,
 

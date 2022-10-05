@@ -1,11 +1,14 @@
 package com.ono.streamer
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ono.streamer.databinding.RvItemLayoutBinding
+
+private const val TAG = "MediaAdapter"
 
 typealias OnItemClicked = (item: com.ono.streamerlibrary.models.Result) -> Unit
 
@@ -41,6 +44,7 @@ class MediaAdapter(private val context: Context, val onItemClicked: OnItemClicke
     inner class ViewHolder(val binding: RvItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(result: com.ono.streamerlibrary.models.Result) {
             binding.result = result
+            Log.e(TAG, "bind: $result \n")
             binding.executePendingBindings()
         }
 
@@ -57,11 +61,11 @@ class MediaAdapter(private val context: Context, val onItemClicked: OnItemClicke
         }
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldMembers[oldItemPosition] == newMembers[newItemPosition]
+            return oldMembers[oldItemPosition].id == newMembers[newItemPosition].id
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldMembers[oldItemPosition] == newMembers[newItemPosition]
+            return oldMembers[oldItemPosition].id == newMembers[newItemPosition].id
         }
 
     }

@@ -22,6 +22,12 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
     var tvShows = ArrayList<Result>()
     var profiles = ArrayList<Result>()
 
+    private var defaultMovies = ArrayList<Result>()
+    var defaultTvShows = ArrayList<Result>()
+    var defaultProfiles = ArrayList<Result>()
+
+    var _loader = MutableLiveData<Boolean>(false)
+
     private var _moviesList = MutableLiveData<List<Result>>(ArrayList())
     val moviesList: LiveData<List<Result>> = _moviesList
 
@@ -35,31 +41,47 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
     val selectedItem: LiveData<Result> = _selectedItem
 
     fun initViewModel() {
-        getMoviesResponse()
+        getDefaultData()
     }
 
-    private fun getMoviesResponse() {
+    private fun getDefaultData() {
         scope.launch(Dispatchers.IO) {
-
-            val response = repository.getAllData()
-            filterMoviesData(response)
-
-//            when (val response = repository.getAllData()) {
-//                is ResponseModel -> filterMoviesData(response)
-//                is ErrorResponse -> showErrorMessage(response)
-//            }
+            val response = repository.getDefaultData()
+            filterResponseData(response)
         }
     }
 
-    private fun filterMoviesData(response: ResponseModel) {
-        for (item in response.results!!) {
-            when (item.media_type) {
-                "movie" -> movies.add(item)
-                "tv" -> tvShows.add(item)
-                "person" -> profiles.add(item)
-            }
-        }
+    private fun filterResponseData(response: ResponseModel) {
+        if (response.results != null && response.results!!.isNotEmpty()) {
+            movies.clear()
+            tvShows.clear()
+            profiles.clear()
 
+            for (item in response.results!!) {
+                when (item.media_type) {
+                    "movie" -> movies.add(item)
+                    "tv" -> tvShows.add(item)
+                    "person" -> profiles.add(item)
+                }
+            }
+            setDefaultData()
+            sendDataToUI()
+        }
+    }
+
+    private fun setDefaultData() {
+        if (defaultMovies.size == 0) {
+            defaultMovies.addAll(movies)
+        }
+        if (defaultTvShows.size == 0) {
+            defaultProfiles.addAll(tvShows)
+        }
+        if (defaultProfiles.size == 0) {
+            defaultProfiles.addAll(profiles)
+        }
+    }
+
+    private fun sendDataToUI() {
         scope.launch(Dispatchers.Main) {
             _moviesList.value = movies
             _tvShowsList.value = tvShows
@@ -69,6 +91,18 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
             _tvShowsList.postValue(tvShows)
             _profilesList.postValue(profiles)
         }
+    }
+
+    fun getSearchedResult(query: String) {
+        if (query.isNotEmpty()) {
+            scope.launch(Dispatchers.IO) {
+                val response = repository.getSearchedData(query)
+                filterResponseData(response)
+            }
+        } else {
+            sendDataToUI()
+        }
+
     }
 
     private fun showErrorMessage(response: Any) {
