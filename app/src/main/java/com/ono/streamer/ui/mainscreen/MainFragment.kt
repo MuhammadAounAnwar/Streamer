@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.ono.streamer.MediaAdapter
+import com.ono.streamer.R
 import com.ono.streamer.databinding.FragmentMainBinding
 import com.ono.streamer.ui.ViewModelFactory
 import dagger.android.AndroidInjector
@@ -32,13 +34,19 @@ class MainFragment : Fragment(), HasAndroidInjector {
     }
 
     private val moviesAdapter by lazy {
-        MediaAdapter(requireContext())
+        MediaAdapter(requireContext(), onItemClicked = {
+            navigateToDetailFragment(it)
+        })
     }
     private val tvShowsAdapter by lazy {
-        MediaAdapter(requireContext())
+        MediaAdapter(requireContext(), onItemClicked = {
+            navigateToDetailFragment(it)
+        })
     }
     private val profilesAdapter by lazy {
-        MediaAdapter(requireContext())
+        MediaAdapter(requireContext(), onItemClicked = {
+            navigateToDetailFragment(it)
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -62,4 +70,9 @@ class MainFragment : Fragment(), HasAndroidInjector {
 
     override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 
+
+    private fun navigateToDetailFragment(result: com.ono.streamerlibrary.models.Result) {
+        viewModel.defineSelectedItem(result)
+        findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
+    }
 }

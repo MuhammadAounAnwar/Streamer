@@ -31,6 +31,9 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
     private var _profilesList = MutableLiveData<ArrayList<Result>>(ArrayList())
     val profilesList: LiveData<ArrayList<Result>> = _profilesList
 
+    private var _selectedItem = MutableLiveData<Result>()
+    val selectedItem: LiveData<Result> = _selectedItem
+
     fun initViewModel() {
         getMoviesResponse()
     }
@@ -70,6 +73,10 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
 
     private fun showErrorMessage(response: Any) {
         errorResponse = response as ErrorResponse
+    }
+
+    fun defineSelectedItem(result: Result) {
+        _selectedItem.value = result
     }
 
 

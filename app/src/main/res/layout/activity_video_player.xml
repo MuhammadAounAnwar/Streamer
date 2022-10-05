@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.ono.streamer.ui.player.VideoPlayerViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.player.VideoPlayerActivity">
+        android:focusable="true"
+        android:keepScreenOn="true">
 
         <com.google.android.exoplayer2.ui.StyledPlayerView
             android:id="@+id/playerView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true">
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -31,5 +30,5 @@
 
         </com.google.android.exoplayer2.ui.StyledPlayerView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>

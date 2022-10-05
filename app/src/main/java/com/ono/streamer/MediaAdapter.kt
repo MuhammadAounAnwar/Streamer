@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ono.streamer.databinding.RvItemLayoutBinding
 
-class MediaAdapter(private val context: Context) : RecyclerView.Adapter<MediaAdapter.ViewHolder>() {
+typealias OnItemClicked = (item: com.ono.streamerlibrary.models.Result) -> Unit
+
+class MediaAdapter(private val context: Context, val onItemClicked: OnItemClicked) : RecyclerView.Adapter<MediaAdapter.ViewHolder>() {
 
     private val mediaFiles = mutableListOf<com.ono.streamerlibrary.models.Result>()
     override fun getItemCount(): Int {
@@ -21,16 +23,12 @@ class MediaAdapter(private val context: Context) : RecyclerView.Adapter<MediaAda
 
     override fun onBindViewHolder(holder: MediaAdapter.ViewHolder, position: Int) {
         holder.bind(mediaFiles[position])
+        holder.binding.root.setOnClickListener {
+            onItemClicked(mediaFiles[position])
+        }
     }
 
     fun submitMediaList(recyclerView: RecyclerView, mediaFiles: List<com.ono.streamerlibrary.models.Result>) {
-//        recyclerView.post {
-//            if (this.mediaFiles.isEmpty()) {
-//                this.mediaFiles.addAll(mediaFiles)
-//                notifyDataSetChanged()
-//            }
-//        }
-
         mediaFiles.let {
             val diffUtil = DiffUtil.calculateDiff(ItemsDiffUtil(this.mediaFiles, it))
             this.mediaFiles.clear()

@@ -35,10 +35,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@{result.name}"
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
+            app:setTitleText="@{result}"
             app:layout_constraintBottom_toBottomOf="@+id/ivThumbnail"
             app:layout_constraintEnd_toEndOf="@+id/ivThumbnail"
             app:layout_constraintStart_toStartOf="@+id/ivThumbnail" />

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.ono.streamer.databinding.FragmentDetailBinding
 import com.ono.streamer.ui.ViewModelFactory
+import com.ono.streamer.ui.player.VideoPlayerActivity
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -30,10 +31,17 @@ class DetailFragment : Fragment(), HasAndroidInjector {
         ViewModelProvider(requireActivity(), factory)[StreamerViewModel::class.java]
     }
 
+    private val clickListener by lazy {
+        View.OnClickListener {
+            VideoPlayerActivity.initiateActivity(requireActivity(), viewModel.selectedItem.value?.backdrop_path.toString())
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDetailBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        binding.clickListener = clickListener
         return binding.root
     }
 
