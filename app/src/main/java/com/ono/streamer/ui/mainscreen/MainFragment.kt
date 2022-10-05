@@ -65,7 +65,9 @@ class MainFragment : Fragment(), HasAndroidInjector {
         viewModel?.addNewValuesToRV(adapter, mediaType)
     }
 
-    lateinit var layoutManager: LinearLayoutManager
+    lateinit var moviesLayoutManager: LinearLayoutManager
+    lateinit var tvShowsLayoutManager: LinearLayoutManager
+    lateinit var profilesLayoutManager: LinearLayoutManager
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
         binding = FragmentMainBinding.inflate(inflater, container, false)
@@ -74,10 +76,17 @@ class MainFragment : Fragment(), HasAndroidInjector {
 
         loader = LoaderDialog(requireContext())
         loader.createProgressDialog()
-        layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        binding.rvMovies.layoutManager = layoutManager
+
+        moviesLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.rvMovies.layoutManager = moviesLayoutManager
         binding.rvMovies.adapter = moviesAdapter
+
+        tvShowsLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.rvTvShows.layoutManager = tvShowsLayoutManager
         binding.rvTvShows.adapter = tvShowsAdapter
+
+        profilesLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.rvProfiles.layoutManager = profilesLayoutManager
         binding.rvProfiles.adapter = profilesAdapter
 
         initScrollListeners()
@@ -103,7 +112,25 @@ class MainFragment : Fragment(), HasAndroidInjector {
     }
 
     private fun initScrollListeners() {
-        binding.rvMovies.addOnScrollListener(object : RVScrollListener(layoutManager) {
+        binding.rvMovies.addOnScrollListener(object : RVScrollListener(moviesLayoutManager) {
+            override fun loadMoreItems() {
+                viewModel.loadNextPage()
+            }
+
+            override fun isLastPage(): Boolean = viewModel.isLastPage
+            override fun isLoading(): Boolean = viewModel.isLoading
+        })
+
+        binding.rvTvShows.addOnScrollListener(object : RVScrollListener(tvShowsLayoutManager) {
+            override fun loadMoreItems() {
+                viewModel.loadNextPage()
+            }
+
+            override fun isLastPage(): Boolean = viewModel.isLastPage
+            override fun isLoading(): Boolean = viewModel.isLoading
+        })
+
+        binding.rvProfiles.addOnScrollListener(object : RVScrollListener(profilesLayoutManager) {
             override fun loadMoreItems() {
                 viewModel.loadNextPage()
             }
