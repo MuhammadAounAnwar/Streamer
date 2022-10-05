@@ -1,10 +1,14 @@
 package com.ono.streamer.ui.mainscreen
 
 import android.util.Log
-import com.google.gson.Gson
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.ono.streamerlibrary.RetrofitHelper
 import com.ono.streamerlibrary.WebServices
+import com.ono.streamerlibrary.models.ErrorUtils
 import com.ono.streamerlibrary.models.ResponseModel
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 
@@ -38,18 +42,48 @@ class RepositoryImpl(private val source: ISource) : Repository {
 
 class ISourceImpl : ISource {
 
-    private lateinit var response: ResponseModel
+    private var _resModel = MutableLiveData<ResponseModel>()
+    val resModel: LiveData<ResponseModel> = _resModel
+    private lateinit var responseModel: ResponseModel
 
-    override suspend fun getDefaultData(): ResponseModel = getData("action", 1)
-    override suspend fun getSearchedData(query: String) = getData(query, 1)
-    override suspend fun getNextPage(query: String, pageNo: Int): ResponseModel = getData(query, pageNo)
+    override suspend fun getDefaultData(): ResponseModel {
+        val data = getData("action", 1)
+        _resModel.postValue(data)
+        return resModel.value!!
+    }
 
-    private suspend fun getData(query: String, pageNo: Int): ResponseModel {
+    override suspend fun getSearchedData(query: String): ResponseModel {
+        _resModel.value = getData(query, 1)
+        return resModel.value!!
+    }
+
+    override suspend fun getNextPage(query: String, pageNo: Int): ResponseModel {
+        _resModel.value = getData(query, pageNo)
+        return resModel.value!!
+    }
+
+    private fun getData(query: String, pageNo: Int): ResponseModel {
         kotlin.runCatching {
-            response = RetrofitHelper.getInstance().create(WebServices::class.java).getMultiSearch("3d0cda4466f269e793e9283f6ce0b75e", "en-US", query, pageNo, false, "")
+            val res = RetrofitHelper.getInstance().create(WebServices::class.java).getMultiSearch("3d0cda4466f269e793e9283f6ce0b75e", "en-US", query, pageNo, false, "")
+            res.enqueue(object : Callback<ResponseModel> {
+                override fun onResponse(call: Call<ResponseModel>, response: Response<ResponseModel>) {
+                    if (response.isSuccessful) {
+                        responseModel = response.body() as ResponseModel
+                        _resModel.postValue(responseModel)
+                    } else {
+                        val err = ErrorUtils.parseError(response)
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseModel>, t: Throwable) {
+                    Log.e(TAG, "onFailure: ", t)
+                }
+            })
+
+
         }.onFailure {
             it.printStackTrace()
         }
-        return response
+        return responseModel
     }
 }

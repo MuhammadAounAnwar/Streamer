@@ -1,19 +1,29 @@
 package com.ono.streamerlibrary
 
 import com.ono.streamerlibrary.models.ResponseModel
-import retrofit2.Response
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface WebServices {
     @GET("search/multi?")
-    suspend fun getMultiSearch(
+    fun getMultiSearch(
         @Query("api_key") api_key: String,
         @Query("language") language: String,
         @Query("query") query: String,
         @Query("page") page: Int,
         @Query("include_adult") include_adult: Boolean,
         @Query("region") region: String
-    ): ResponseModel
+    ): Call<ResponseModel>
+
+//    @GET("search/multi?")
+//    suspend fun getMultiSearch(
+//        @Query("api_key") api_key: String,
+//        @Query("language") language: String,
+//        @Query("query") query: String,
+//        @Query("page") page: Int,
+//        @Query("include_adult") include_adult: Boolean,
+//        @Query("region") region: String
+//    ): Response<*>
 
 }
