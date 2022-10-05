@@ -1,7 +1,6 @@
 package com.ono.streamer.ui.mainscreen
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.ono.streamer.MediaAdapter
 import com.ono.streamer.ui.helper.MediaType
@@ -67,8 +66,6 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
     private fun getDefaultData() {
         scope.launch(Dispatchers.IO) {
             val response = repository.getDefaultData()
-            _dtoResponseModel.postValue(response)
-            resetData()
             filterResponseData(response)
             populateDataToUI()
         }
@@ -79,8 +76,6 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
             _query.value = query
             scope.launch(Dispatchers.IO) {
                 val response = repository.getSearchedData(query)
-                _dtoResponseModel.postValue(response)
-                resetData()
                 filterResponseData(response)
                 populateDataToUI()
             }
@@ -90,8 +85,6 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
     private fun getNextPage(pageNo: Int) {
         scope.launch(Dispatchers.IO) {
             val response = repository.getNextPage(query.value!!, pageNo)
-            _dtoResponseModel.postValue(response)
-            resetData()
             filterResponseData(response)
             isLoading = false
             _loader.postValue(false)
@@ -100,6 +93,8 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
 
     private fun filterResponseData(response: ResponseModel) {
         if (response.results != null && response.results!!.isNotEmpty()) {
+            _dtoResponseModel.postValue(response)
+            resetData()
             for (item in response.results!!) {
                 when (item.media_type) {
                     "movie" -> movies.add(item)
@@ -107,11 +102,6 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
                     "person" -> profiles.add(item)
                 }
             }
-
-            tvShows.forEach { tvshow ->
-                Log.e(TAG, "filterResponseData: $tvshow")
-            }
-
         }
     }
 
@@ -128,6 +118,7 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
             isLoading = true
             pageCount += 1
             if (pageCount < dtoResponseModel.value?.totalPages!!) {
+                _currentPage.value = pageCount
                 _loader.value = true
                 getNextPage(pageCount)
             } else {

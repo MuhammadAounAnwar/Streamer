@@ -11,7 +11,7 @@ data class Result(
 
     @SerializedName("id") @Expose var id: Int? = null,
 
-    @SerializedName("overview") @Expose var overview: String? = null,
+    @SerializedName("overview") @Expose var overview: String? = "overview",
 
     @SerializedName("backdrop_path") @Expose var backdrop_path: String = "backdropPath",
 

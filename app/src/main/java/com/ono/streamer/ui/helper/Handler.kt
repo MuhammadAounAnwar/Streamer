@@ -1,5 +1,6 @@
 package com.ono.streamer.ui.helper
 
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -40,13 +41,16 @@ fun handleVisibility(view: View, result: com.ono.streamerlibrary.models.Result) 
     }
 }
 
-@BindingAdapter("showDescription")
-fun showDescription(view: View, result: com.ono.streamerlibrary.models.Result) {
-    val value = when (result.media_type) {
-        "movie,tv" -> result.overview
+@BindingAdapter("showMediaDescription")
+fun showMediaDescription(view: View, result: com.ono.streamerlibrary.models.Result) {
+    Log.e(TAG, "showMediaDescription: $result")
+    val desc = when (result.media_type) {
+        "movie" -> result.overview
+        "tv" -> result.overview
         else -> {}
     }
-    (view as TextView).text = StringBuilder().append(value)
+    Log.e(TAG, "showMediaDescription: $desc")
+    (view as TextView).text = StringBuilder().append(desc)
 }
 
 
