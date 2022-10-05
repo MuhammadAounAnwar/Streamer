@@ -55,3 +55,4 @@ fun rvAdapter(recyclerView: RecyclerView, data: List<com.ono.streamerlibrary.mod
     val adapter = recyclerView.adapter as MediaAdapter
     data.let { adapter.submitMediaList(recyclerView, data) }
 }
+

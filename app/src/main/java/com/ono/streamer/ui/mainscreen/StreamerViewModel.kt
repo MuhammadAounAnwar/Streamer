@@ -1,7 +1,10 @@
 package com.ono.streamer.ui.mainscreen
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
+import com.ono.streamer.MediaAdapter
+import com.ono.streamer.ui.helper.MediaType
 import com.ono.streamerlibrary.models.ErrorResponse
 import com.ono.streamerlibrary.models.ResponseModel
 import com.ono.streamerlibrary.models.Result
@@ -19,14 +22,22 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
     private lateinit var responseModel: ResponseModel
     private lateinit var errorResponse: ErrorResponse
     private var movies = ArrayList<Result>()
-    var tvShows = ArrayList<Result>()
-    var profiles = ArrayList<Result>()
+    private var tvShows = ArrayList<Result>()
+    private var profiles = ArrayList<Result>()
 
-    private var defaultMovies = ArrayList<Result>()
-    var defaultTvShows = ArrayList<Result>()
-    var defaultProfiles = ArrayList<Result>()
+    var _loader = MutableLiveData(false)
+    var isLastPage = false
+    var isLoading = false
+    var pageCount = 1
 
-    var _loader = MutableLiveData<Boolean>(false)
+    private var _query = MutableLiveData("action")
+    val query: LiveData<String> = _query
+
+    private var _currentPage = MutableLiveData(1)
+    val currentPage: LiveData<Int> = _currentPage
+
+    private var _dtoResponseModel = MutableLiveData<ResponseModel>()
+    private val dtoResponseModel: LiveData<ResponseModel> = _dtoResponseModel
 
     private var _moviesList = MutableLiveData<List<Result>>(ArrayList())
     val moviesList: LiveData<List<Result>> = _moviesList
@@ -40,24 +51,55 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
     private var _selectedItem = MutableLiveData<Result>()
     val selectedItem: LiveData<Result> = _selectedItem
 
+    private val _nextPageData = MutableLiveData<ResponseModel>()
+    val nextPageData: LiveData<ResponseModel> = _nextPageData
+
     fun initViewModel() {
         getDefaultData()
     }
 
+    private fun resetData() {
+        movies.clear()
+        tvShows.clear()
+        profiles.clear()
+    }
+
     private fun getDefaultData() {
-        _loader.value = true
         scope.launch(Dispatchers.IO) {
             val response = repository.getDefaultData()
+            _dtoResponseModel.postValue(response)
+            resetData()
             filterResponseData(response)
+            populateDataToUI()
+        }
+    }
+
+    fun getSearchedResult(query: String) {
+        if (query.isNotEmpty()) {
+            _query.value = query
+            scope.launch(Dispatchers.IO) {
+                val response = repository.getSearchedData(query)
+                _dtoResponseModel.postValue(response)
+                resetData()
+                filterResponseData(response)
+                populateDataToUI()
+            }
+        }
+    }
+
+    private fun getNextPage(pageNo: Int) {
+        scope.launch(Dispatchers.IO) {
+            val response = repository.getNextPage(query.value!!, pageNo)
+            _dtoResponseModel.postValue(response)
+            resetData()
+            filterResponseData(response)
+            isLoading = false
+            _loader.postValue(false)
         }
     }
 
     private fun filterResponseData(response: ResponseModel) {
         if (response.results != null && response.results!!.isNotEmpty()) {
-            movies.clear()
-            tvShows.clear()
-            profiles.clear()
-
             for (item in response.results!!) {
                 when (item.media_type) {
                     "movie" -> movies.add(item)
@@ -65,53 +107,49 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
                     "person" -> profiles.add(item)
                 }
             }
-//            setDefaultData()
-            sendDataToUI()
+
+            tvShows.forEach { tvshow ->
+                Log.e(TAG, "filterResponseData: $tvshow")
+            }
+
         }
     }
 
-    private fun setDefaultData() {
-        if (defaultMovies.size == 0) {
-            defaultMovies.addAll(movies)
-        }
-        if (defaultTvShows.size == 0) {
-            defaultProfiles.addAll(tvShows)
-        }
-        if (defaultProfiles.size == 0) {
-            defaultProfiles.addAll(profiles)
-        }
-    }
-
-    private fun sendDataToUI() {
+    private fun populateDataToUI() {
         scope.launch(Dispatchers.Main) {
-            _loader.value = false
             _moviesList.value = movies
             _tvShowsList.value = tvShows
             _profilesList.value = profiles
-
-            _moviesList.postValue(movies)
-            _tvShowsList.postValue(tvShows)
-            _profilesList.postValue(profiles)
         }
     }
 
-    fun getSearchedResult(query: String) {
-        if (query.isNotEmpty()) {
-            _loader.value = true
-            scope.launch(Dispatchers.IO) {
-                val response = repository.getSearchedData(query)
-                filterResponseData(response)
+    fun loadNextPage() {
+        if (!isLoading) {
+            isLoading = true
+            pageCount += 1
+            if (pageCount < dtoResponseModel.value?.totalPages!!) {
+                _loader.value = true
+                getNextPage(pageCount)
+            } else {
+                isLastPage = true
             }
         }
-
     }
 
-    private fun showErrorMessage(response: Any) {
-        errorResponse = response as ErrorResponse
+    fun addNewValuesToRV(adapter: MediaAdapter, mediaType: MediaType) {
+        when (mediaType) {
+            MediaType.MOVIE -> adapter.addNewItems(movies)
+            MediaType.TV -> adapter.addNewItems(tvShows)
+            MediaType.PERSON -> adapter.addNewItems(profiles)
+        }
     }
 
     fun defineSelectedItem(result: Result) {
         _selectedItem.value = result
+    }
+
+    private fun showErrorMessage(response: Any) {
+        errorResponse = response as ErrorResponse
     }
 
 

@@ -21,6 +21,7 @@ interface Repository {
 
     suspend fun getDefaultData(): ResponseModel
     suspend fun getSearchedData(query: String): ResponseModel
+    suspend fun getNextPage(query: String, pageNo: Int): ResponseModel
 }
 
 interface ISource {
@@ -30,30 +31,26 @@ interface ISource {
 
     suspend fun getDefaultData(): ResponseModel
     suspend fun getSearchedData(query: String): ResponseModel
+    suspend fun getNextPage(query: String, pageNo: Int): ResponseModel
 }
 
 class RepositoryImpl(private val source: ISource) : Repository {
     override suspend fun getDefaultData(): ResponseModel = source.getDefaultData()
     override suspend fun getSearchedData(query: String): ResponseModel = source.getSearchedData(query)
+    override suspend fun getNextPage(query: String, pageNo: Int): ResponseModel = source.getNextPage(query, pageNo)
 }
-
 
 class ISourceImpl : ISource {
 
     private lateinit var response: ResponseModel
 
-    override suspend fun getDefaultData(): ResponseModel = getData("action")
+    override suspend fun getDefaultData(): ResponseModel = getData("action", 1)
+    override suspend fun getSearchedData(query: String) = getData(query, 1)
+    override suspend fun getNextPage(query: String, pageNo: Int): ResponseModel = getData(query, pageNo)
 
-    override suspend fun getSearchedData(query: String) = getData(query)
-
-    private suspend fun getData(query: String): ResponseModel {
+    private suspend fun getData(query: String, pageNo: Int): ResponseModel {
         kotlin.runCatching {
-            response = RetrofitHelper.getInstance().create(WebServices::class.java).getMultiSearch("3d0cda4466f269e793e9283f6ce0b75e", "en-US", query, 1, false, "")
-//            response = when (apiResponse.code()) {
-//                200 -> com.ono.streamerlibrary.models.JsonParser.parseResponse(apiResponse)
-//                401, 404 -> convertJsonResponse(apiResponse, ErrorResponse::class.java)
-//                else -> {}
-//            }
+            response = RetrofitHelper.getInstance().create(WebServices::class.java).getMultiSearch("3d0cda4466f269e793e9283f6ce0b75e", "en-US", query, pageNo, false, "")
         }.onFailure {
             it.printStackTrace()
         }

@@ -31,6 +31,15 @@ class MediaAdapter(private val context: Context, val onItemClicked: OnItemClicke
         }
     }
 
+    fun addNewItems(mediaFiles: List<com.ono.streamerlibrary.models.Result>) {
+        mediaFiles.let {
+            val prevIndex = this.mediaFiles.size
+            this.mediaFiles.addAll(it)
+            notifyItemRangeInserted(prevIndex, mediaFiles.size)
+        }
+        Log.e(TAG, "addNewItems: ")
+    }
+
     fun submitMediaList(recyclerView: RecyclerView, mediaFiles: List<com.ono.streamerlibrary.models.Result>) {
         mediaFiles.let {
             val diffUtil = DiffUtil.calculateDiff(ItemsDiffUtil(this.mediaFiles, it))
@@ -44,7 +53,6 @@ class MediaAdapter(private val context: Context, val onItemClicked: OnItemClicke
     inner class ViewHolder(val binding: RvItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(result: com.ono.streamerlibrary.models.Result) {
             binding.result = result
-            Log.e(TAG, "bind: $result \n")
             binding.executePendingBindings()
         }
 

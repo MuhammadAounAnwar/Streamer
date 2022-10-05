@@ -8,15 +8,22 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ono.streamer.MediaAdapter
 import com.ono.streamer.R
 import com.ono.streamer.databinding.FragmentMainBinding
 import com.ono.streamer.ui.ViewModelFactory
+import com.ono.streamer.ui.helper.MediaType
+import com.ono.streamer.ui.helper.RVScrollListener
 import com.ono.streamerlibrary.LoaderDialog
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainFragment : Fragment(), HasAndroidInjector {
@@ -27,13 +34,11 @@ class MainFragment : Fragment(), HasAndroidInjector {
     @Inject
     lateinit var injector: StreamerViewModelInjector
 
+    private lateinit var loader: LoaderDialog
     lateinit var binding: FragmentMainBinding
     private var searchView: SearchView? = null
     var searchMenuItem: MenuItem? = null
 
-    private val loader by lazy {
-        LoaderDialog(requireContext())
-    }
 
     private val viewModel by lazy {
         val factory = ViewModelFactory(injector, this, null)
@@ -56,18 +61,26 @@ class MainFragment : Fragment(), HasAndroidInjector {
         })
     }
 
+    private fun FragmentMainBinding.ddNewItems(adapter: MediaAdapter, mediaType: MediaType) {
+        viewModel?.addNewValuesToRV(adapter, mediaType)
+    }
+
+    lateinit var layoutManager: LinearLayoutManager
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
         binding = FragmentMainBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        loader = LoaderDialog(requireContext())
         loader.createProgressDialog()
+        layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.rvMovies.layoutManager = layoutManager
         binding.rvMovies.adapter = moviesAdapter
         binding.rvTvShows.adapter = tvShowsAdapter
         binding.rvProfiles.adapter = profilesAdapter
-        binding.toolbar.setNavigationOnClickListener { requireActivity().finish() }
 
+        initScrollListeners()
         initObservers()
         setupToolbar()
 
@@ -76,15 +89,32 @@ class MainFragment : Fragment(), HasAndroidInjector {
 
     private fun initObservers() {
         viewModel._loader.observe(requireActivity()) {
-            if (it) {
-                loader.showLoadingDialog()
-            } else {
-                loader.hideLoadingDialog()
+            CoroutineScope(Dispatchers.Main).launch {
+                if (it) {
+                    loader.showLoadingDialog()
+                } else {
+                    loader.hideLoadingDialog()
+                    binding.ddNewItems(moviesAdapter, MediaType.MOVIE)
+                    binding.ddNewItems(tvShowsAdapter, MediaType.TV)
+                    binding.ddNewItems(profilesAdapter, MediaType.PERSON)
+                }
             }
         }
     }
 
+    private fun initScrollListeners() {
+        binding.rvMovies.addOnScrollListener(object : RVScrollListener(layoutManager) {
+            override fun loadMoreItems() {
+                viewModel.loadNextPage()
+            }
+
+            override fun isLastPage(): Boolean = viewModel.isLastPage
+            override fun isLoading(): Boolean = viewModel.isLoading
+        })
+    }
+
     private fun setupToolbar() {
+        binding.toolbar.setNavigationOnClickListener { requireActivity().finish() }
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(true)
     }
