@@ -45,6 +45,7 @@ class MainFragment : Fragment(), HasAndroidInjector {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+
         binding.rvMovies.adapter = moviesAdapter
         binding.rvTvShows.adapter = tvShowsAdapter
         binding.rvProfiles.adapter = profilesAdapter

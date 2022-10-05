@@ -37,18 +37,20 @@ class StreamerViewModel(val savedStateHandle: SavedStateHandle, val applicationC
 
     private fun getMoviesResponse() {
         scope.launch(Dispatchers.IO) {
-            when (val response = repository.getAllData()) {
-                is ResponseModel -> filterMoviesData(response)
-                is ErrorResponse -> showErrorMessage(response)
-            }
+
+            val response = repository.getAllData()
+            filterMoviesData(response)
+
+//            when (val response = repository.getAllData()) {
+//                is ResponseModel -> filterMoviesData(response)
+//                is ErrorResponse -> showErrorMessage(response)
+//            }
         }
     }
 
-    private fun filterMoviesData(response: Any) {
-        responseModel = response as ResponseModel
-
-        for (item in responseModel.results!!) {
-            when (item.mediaType) {
+    private fun filterMoviesData(response: ResponseModel) {
+        for (item in response.results!!) {
+            when (item.media_type) {
                 "movie" -> movies.add(item)
                 "tv" -> tvShows.add(item)
                 "person" -> profiles.add(item)

@@ -1,5 +1,6 @@
 package com.ono.streamerlibrary
 
+import com.ono.streamerlibrary.models.ResponseModel
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -13,6 +14,6 @@ interface WebServices {
         @Query("page") page: Int,
         @Query("include_adult") include_adult: Boolean,
         @Query("region") region: String
-    ): Response<Any>
+    ): ResponseModel
 
 }
